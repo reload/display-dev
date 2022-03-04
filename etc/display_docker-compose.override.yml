@@ -1,0 +1,14 @@
+version: "3"
+services:
+  nginx:
+    labels:
+      # Enable https for the default route
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true"
+      # Create a router for http
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.rule=Host(`${COMPOSE_DOMAIN}`)"
+      # Have the http router redirect to https, the middleware is defined in static.yml
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.middlewares=redirect-to-https@file"
+
+  cypress:
+    profiles:
+      - "disabled"
