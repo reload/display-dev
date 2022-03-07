@@ -19,10 +19,19 @@ tasks:
   projects:update:
     dir: projects
     cmds:
-      - cd display-api-service && git pull
+      # We pin to a commit prior to the tenant PR
+      - cd display-api-service && git checkout bd061107820e754b9cc656a7019d2e82cef4684b && git reset --hard
       - cd display-admin-client && git pull
       - cd display-client && git pull
       - cd display-client/templates && git pull
+
+  projects:status:
+    dir: projects
+    cmds:
+      - cd display-api-service && git status
+      - cd display-admin-client && git status
+      - cd display-client && git status
+      - cd display-client/templates && git status
 
   display:reset:
     dir: projects/display-client
