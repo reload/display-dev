@@ -1,0 +1,8 @@
+
+@startuml
+participant "Display Client" as display
+participant "API" as api
+
+display -> api: Get slides
+api --> display: Return slides
+@enduml
