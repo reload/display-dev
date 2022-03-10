@@ -1,0 +1,121 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list-all
+    silent: true
+
+  projects:clone:
+    dir: projects
+    cmds:
+      - test -d display-api-service || git clone git@github.com:os2display/display-api-service.git
+      - test -d display-admin-client || git clone git@github.com:os2display/display-admin-client.git
+      - test -d display-client || git clone git@github.com:os2display/display-client.git
+      - test -d display-client/templates || git clone https://github.com/os2display/display-templates.git display-client/templates
+
+  projects:update:
+    dir: projects
+    cmds:
+      # We pin to a commit prior to the tenant PR
+      - cd display-api-service && git checkout bd061107820e754b9cc656a7019d2e82cef4684b && git reset --hard
+      - cd display-admin-client && git pull
+      - cd display-client && git pull
+      - cd display-client/templates && git pull
+
+  projects:status:
+    dir: projects
+    cmds:
+      - cd display-api-service && git status
+      - cd display-admin-client && git status
+      - cd display-client && git status
+      - cd display-client/templates && git status
+
+  display:reset:
+    dir: projects/display-client
+    cmds:
+     - ../../scripts/display-reset.sh
+
+  display:down:
+    dir: projects/display-client
+    cmds:
+     - docker compose down -v
+
+  admin:reset:
+    dir: projects/display-admin-client
+    cmds:
+     - ../../scripts/admin-reset.sh
+
+  admin:down:
+    dir: projects/display-admin-client
+    cmds:
+      - docker compose down -v
+
+  admin:logs:
+    dir: projects/display-admin-client
+    cmds:
+      - docker compose logs -f
+
+  api:reset:
+    dir: projects/display-api-service
+    cmds:
+      - ../../scripts/api-reset.sh
+      - task: api:template-load
+
+  api:logs:
+    dir: projects/display-api-service
+    cmds:
+      - docker compose logs -f
+
+  api:template-load:
+    dir: projects/display-api-service
+    cmds:
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/screen-templates/full-screen.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/image-text/image-text.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/table/table.json
+
+  api:down:
+    dir: projects/display-api-service
+    cmds:
+      - docker compose down -v
+
+  traefik:reset:
+    cmds:
+      - task: traefik:mkcert
+      - scripts/traefik-reset.sh
+
+  traefik:logs:
+    dir: traefik
+    cmds:
+      - docker compose logs -f
+
+  traefik:down:
+    dir: traefik
+    cmds:
+      - docker compose down
+
+  traefik:mkcert:
+    dir: traefik
+    cmds:
+      - mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem "*.local.itkdev.dk" "*.docker"
+      - mkcert install
+
+  reset:
+    cmds:
+      - task: traefik:reset
+      - task: api:reset
+      - task: api:down
+      - task: api:reset
+      - task: admin:down
+      - task: admin:reset
+      - task: display:down
+      - task: display:reset
+
+  down:
+    cmds:
+      - task: traefik:down
+      - task: api:down
+      - task: admin:down
+      - task: display:down
