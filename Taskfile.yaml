@@ -18,13 +18,13 @@ tasks:
       - test -d display-api-service || git clone git@github.com:os2display/display-api-service.git
       - test -d display-admin-client || git clone git@github.com:os2display/display-admin-client.git
       - test -d display-client || git clone git@github.com:os2display/display-client.git
-      - test -d display-client/templates || git clone https://github.com/os2display/display-templates.git display-client/templates
+      - test -d display-templates || git clone https://github.com/os2display/display-templates.git
 
   projects:update:
     dir: projects
     cmds:
       # We pin to a commit prior to the tenant PR
-      - cd display-api-service && git checkout bd061107820e754b9cc656a7019d2e82cef4684b && git reset --hard
+      - cd display-api-service && git pull
       - cd display-admin-client && git pull
       - cd display-client && git pull
       - cd display-client/templates && git pull
@@ -40,7 +40,7 @@ tasks:
   display:reset:
     dir: projects/display-client
     cmds:
-     - ../../scripts/display-reset.sh
+     - time ../../scripts/display-reset.sh
 
   display:down:
     dir: projects/display-client
@@ -50,7 +50,7 @@ tasks:
   admin:reset:
     dir: projects/display-admin-client
     cmds:
-     - ../../scripts/admin-reset.sh
+     - time ../../scripts/admin-reset.sh
 
   admin:down:
     dir: projects/display-admin-client
@@ -65,7 +65,7 @@ tasks:
   api:reset:
     dir: projects/display-api-service
     cmds:
-      - ../../scripts/api-reset.sh
+      - time ../../scripts/api-reset.sh
       - task: api:template-load
 
   api:logs:
@@ -88,7 +88,7 @@ tasks:
   traefik:reset:
     cmds:
       - task: traefik:mkcert
-      - scripts/traefik-reset.sh
+      - time scripts/traefik-reset.sh
 
   traefik:logs:
     dir: traefik
@@ -101,20 +101,19 @@ tasks:
       - docker compose down
 
   traefik:mkcert:
-    dir: traefik
+    dir: traefik/certs
     cmds:
-      - mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem "*.local.itkdev.dk" "*.docker"
+      - mkcert -cert-file local-cert.pem -key-file local-key.pem "*.local.itkdev.dk" "*.docker"
       - mkcert install
 
   reset:
     cmds:
-      - task: traefik:reset
-      - task: api:reset
+      - docker network create frontend 2>/dev/null|| true
       - task: api:down
-      - task: api:reset
       - task: admin:down
-      - task: admin:reset
       - task: display:down
+      - task: api:reset
+      - task: admin:reset
       - task: display:reset
 
   down:

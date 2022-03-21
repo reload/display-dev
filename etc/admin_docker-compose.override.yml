@@ -13,14 +13,6 @@ services:
     profiles:
       - "disabled"
 
-  api:
-    profiles:
-      - "disabled"
-
-  nginx-api:
-    profiles:
-      - "disabled"
-
   cypress:
     profiles:
       - "disabled"
