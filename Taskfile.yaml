@@ -27,7 +27,7 @@ tasks:
       - cd display-api-service && git pull
       - cd display-admin-client && git pull
       - cd display-client && git pull
-      - cd display-client/templates && git pull
+      - cd display-templates && git pull
 
   projects:git-reset:
     desc: Reset projects to upstream develop. This will DESTROY any local changes.
@@ -45,7 +45,7 @@ tasks:
       - cd display-api-service && git status
       - cd display-admin-client && git status
       - cd display-client && git status
-      - cd display-client/templates && git status
+      - cd display-templates && git status
 
   display:reset:
     dir: projects/display-client
