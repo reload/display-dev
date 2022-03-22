@@ -29,6 +29,16 @@ tasks:
       - cd display-client && git pull
       - cd display-client/templates && git pull
 
+  projects:git-reset:
+    desc: Reset projects to upstream develop. This will DESTROY any local changes.
+    dir: projects
+    cmds:
+      # We pin to a commit prior to the tenant PR
+      - cd display-api-service && git reset --hard && git checkout develop && git pull
+      - cd display-admin-client && git reset --hard && git checkout develop && git pull
+      - cd display-client && git reset --hard && git checkout develop && git pull
+      - cd display-templates && git reset --hard && git checkout develop && git pull
+
   projects:status:
     dir: projects
     cmds:
