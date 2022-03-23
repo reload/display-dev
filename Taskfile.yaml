@@ -1,6 +1,6 @@
 # https://taskfile.dev
 
-version: '3'
+version: "3"
 
 vars:
   PLANTUML_RENDERER_VERSION: 1.2022.2
@@ -50,17 +50,17 @@ tasks:
   display:reset:
     dir: projects/display-client
     cmds:
-     - time ../../scripts/display-reset.sh
+      - time ../../scripts/display-reset.sh
 
   display:down:
     dir: projects/display-client
     cmds:
-     - docker compose down -v
+      - docker compose down -v
 
   admin:reset:
     dir: projects/display-admin-client
     cmds:
-     - time ../../scripts/admin-reset.sh
+      - time ../../scripts/admin-reset.sh
 
   admin:down:
     dir: projects/display-admin-client
@@ -87,8 +87,21 @@ tasks:
     dir: projects/display-api-service
     cmds:
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/screen-templates/full-screen.json
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/screen-templates/three-boxes-horizontal.json
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/screen-templates/three-boxes.json
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/screen-templates/touch-template.json
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/screen-templates/two-boxes.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/book-review/book-review.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/calendar/calendar.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/contacts/contacts.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/iframe/iframe.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/image-text/image-text.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/instagram-feed/instagram-feed.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/poster/poster.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/rss/rss.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/slideshow/slideshow.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/table/table.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/os2display/display-templates/develop/build/video/video.json
 
   api:down:
     dir: projects/display-api-service
