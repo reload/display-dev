@@ -19,6 +19,7 @@ tasks:
       - test -d display-admin-client || git clone git@github.com:os2display/display-admin-client.git
       - test -d display-client || git clone git@github.com:os2display/display-client.git
       - test -d display-templates || git clone https://github.com/os2display/display-templates.git
+      - test -d display-kk-integration || git clone git@github.com:reload/display-kk-integration-poc.git display-kk-integration
 
   projects:update:
     dir: projects
@@ -28,6 +29,7 @@ tasks:
       - cd display-admin-client && git pull
       - cd display-client && git pull
       - cd display-templates && git pull
+      - cd display-kk-integration && git pull
 
   projects:git-reset:
     desc: Reset projects to upstream develop. This will DESTROY any local changes.
@@ -38,6 +40,7 @@ tasks:
       - cd display-admin-client && git reset --hard && git checkout develop && git pull
       - cd display-client && git reset --hard && git checkout develop && git pull
       - cd display-templates && git reset --hard && git checkout develop && git pull
+      - cd display-kk-integration && git reset --hard && git checkout main && git pull
 
   projects:status:
     dir: projects
@@ -46,6 +49,13 @@ tasks:
       - cd display-admin-client && git status
       - cd display-client && git status
       - cd display-templates && git status
+      - cd display-kk-integration && git status
+
+  integration:reset:
+    dir: projects/display-admin-client
+    cmds:
+      - time ../../scripts/display-kk-integration.sh
+
 
   display:reset:
     dir: projects/display-client
