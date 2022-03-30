@@ -14,17 +14,21 @@ tasks:
 
   projects:clone:
     dir: projects
+    silent: true
     cmds:
-      - test -d display-api-service || git clone git@github.com:os2display/display-api-service.git
+      # Note, we're using a fork to incorporate a number of temporary fixes.
+      - test -d display-api-service || git clone git@github.com:reload/display-api-service-poc-fork.git display-api-service
       - test -d display-admin-client || git clone git@github.com:os2display/display-admin-client.git
       - test -d display-client || git clone git@github.com:os2display/display-client.git
       - test -d display-templates || git clone https://github.com/os2display/display-templates.git
       - test -d display-kk-integration || git clone git@github.com:reload/display-kk-integration-poc.git display-kk-integration
 
   projects:update:
+    desc: Pull all projects
+    deps:
+      - projects:clone
     dir: projects
     cmds:
-      # We pin to a commit prior to the tenant PR
       - cd display-api-service && git pull
       - cd display-admin-client && git pull
       - cd display-client && git pull
@@ -34,9 +38,10 @@ tasks:
   projects:git-reset:
     desc: Reset projects to upstream develop. This will DESTROY any local changes.
     dir: projects
+    deps:
+      - projects:clone
     cmds:
-      # We pin to a commit prior to the tenant PR
-      - cd display-api-service && git reset --hard && git checkout develop && git pull
+      - cd display-api-service && git reset --hard && git checkout develop-poc && git pull
       - cd display-admin-client && git reset --hard && git checkout develop && git pull
       - cd display-client && git reset --hard && git checkout develop && git pull
       - cd display-templates && git reset --hard && git checkout develop && git pull
@@ -44,6 +49,8 @@ tasks:
 
   projects:status:
     dir: projects
+    deps:
+      - projects:clone
     cmds:
       - cd display-api-service && git status
       - cd display-admin-client && git status
@@ -56,19 +63,13 @@ tasks:
     summary: Be aware we do not run the server in a container
     dir: projects/display-kk-integration
     cmds:
+      - yarn install
       - yarn start:dev
 
-
   integration:generate-client:
-    desc: Generate a fresh api client based on the openapi-spec shipped with api-service
-    dir: projects
+    desc: Generate a fresh api client based on the OpenAPI-spec shipped with api-service
     cmds:
-      - docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli
-          generate
-            --input-spec /local/display-api-service/public/api-spec-v1.json
-            --generator-name typescript-axios
-            --skip-validate-spec
-            --output /local/display-kk-integration/src/display-api-client
+      - projects/display-kk-integration/scripts/generate-client.sh ${PWD}/projects
 
   display:reset:
     dir: projects/display-client
@@ -174,6 +175,7 @@ tasks:
   reset:
     deps:
       - network:setup
+      - projects:clone
     cmds:
       - task: api:down
       - task: admin:down
