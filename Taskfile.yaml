@@ -51,11 +51,24 @@ tasks:
       - cd display-templates && git status
       - cd display-kk-integration && git status
 
-  integration:reset:
-    dir: projects/display-admin-client
+  integration:start:dev:
+    desc: Start a local instances of the integration poc server
+    summary: Be aware we do not run the server in a container
+    dir: projects/display-kk-integration
     cmds:
-      - time ../../scripts/display-kk-integration.sh
+      - yarn start:dev
 
+
+  integration:generate-client:
+    desc: Generate a fresh api client based on the openapi-spec shipped with api-service
+    dir: projects
+    cmds:
+      - docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli
+          generate
+            --input-spec /local/display-api-service/public/api-spec-v1.json
+            --generator-name typescript-axios
+            --skip-validate-spec
+            --output /local/display-kk-integration/src/display-api-client
 
   display:reset:
     dir: projects/display-client
@@ -83,10 +96,25 @@ tasks:
       - docker compose logs -f
 
   api:reset:
+    deps:
+      - network:setup
     dir: projects/display-api-service
     cmds:
       - time ../../scripts/api-reset.sh
       - task: api:template-load
+
+  api:spec-validate:
+    desc: Validate the openapi-spec shipped with display-client
+    dir: projects/display-api-service/public
+    cmds:
+      - docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli
+          validate
+            --input-spec /local/api-spec-v1.json
+
+  api:update-spec:
+    dir: projects/display-api-service
+    cmds:
+      - docker compose exec phpfpm composer update-api-spec
 
   api:logs:
     dir: projects/display-api-service
@@ -139,9 +167,14 @@ tasks:
       - mkcert -cert-file local-cert.pem -key-file local-key.pem "*.local.itkdev.dk" "*.docker"
       - mkcert install
 
-  reset:
+  network:setup:
     cmds:
       - docker network create frontend 2>/dev/null|| true
+
+  reset:
+    deps:
+      - network:setup
+    cmds:
       - task: api:down
       - task: admin:down
       - task: display:down
