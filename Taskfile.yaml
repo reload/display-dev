@@ -124,8 +124,8 @@ tasks:
     dir: projects/display-api-service/public
     cmds:
       - docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli
-          validate
-            --input-spec /local/api-spec-v1.json
+        validate
+        --input-spec /local/api-spec-v1.json
 
   api:update-spec:
     dir: projects/display-api-service
@@ -156,6 +156,7 @@ tasks:
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/slideshow/slideshow.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/table/table.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/video/video.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/twenty-three-video/twenty-three-video.json
 
   api:down:
     dir: projects/display-api-service
