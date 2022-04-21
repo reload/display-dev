@@ -1,0 +1,8 @@
+version: "3.4"
+services:
+  nginx:
+    labels:
+      # Enable https for the default route
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true"
+      # Create a router for http
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.rule=Host(`${COMPOSE_DOMAIN}`)"
