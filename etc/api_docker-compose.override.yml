@@ -8,3 +8,8 @@ services:
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.rule=Host(`${COMPOSE_DOMAIN}`)"
       # Have the http router redirect to https, the middleware is defined in static.yml
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.middlewares=redirect-to-https@file"
+
+  phpfpm:
+    extra_hosts:
+      # Make traefik available as display-templates.local.itkdev.dk
+      display-templates.local.itkdev.dk: host-gateway
