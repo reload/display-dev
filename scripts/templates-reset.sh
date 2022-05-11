@@ -12,5 +12,5 @@ docker compose down -v || true
 
 cp ../../etc/templates_docker-compose.override.yml ./docker-compose.override.yml
 
-docker-compose run node yarn install
+docker-compose run node npm install
 docker compose up -d

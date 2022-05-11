@@ -9,8 +9,11 @@
 ## Getting startet
 
 ```shell
-# do this once
+# We have separate tasks for handling traefik a developer may want to handle
+# the operation of a local development proxy separate from the reset flow of
+# the app containers.
 $ task traefik:reset
-# reset before starting work
+
+# Then perform a full reset.
 $ task reset
 ```

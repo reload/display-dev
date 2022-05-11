@@ -14,6 +14,9 @@ docker compose up -d
 docker compose exec phpfpm composer install
 test -f config/jwt/private.pem || docker compose exec phpfpm bin/console lexik:jwt:generate-keypair
 docker compose exec phpfpm bin/console doctrine:migrations:migrate --no-interaction
-docker compose exec phpfpm bin/console app:tenant:add testTenantKey "Test Tenant Title" "Test Tenant Description"
+docker compose exec phpfpm bin/console app:tenant:add testTenantKey "Local Dev Setup Default tenant" "Description of Local Dev Setup"
+
+# Create an unprivileged and privileged users
+# Usage: app:user:add <email> <password> <description>
 docker compose exec phpfpm bin/console app:user:add user@example.com password user
 docker compose exec phpfpm bin/console app:user:add --admin admin@example.com password admin

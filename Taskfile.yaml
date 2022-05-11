@@ -12,45 +12,52 @@ tasks:
       - task --list-all
     silent: true
 
-  projects:clone:
+  git:clone:all:
     dir: projects
     silent: true
     cmds:
-      # Note, we're using a fork to incorporate a number of temporary fixes.
-      - test -d display-api-service || git clone git@github.com:reload/display-api-service-poc-fork.git display-api-service
+      # Unmodified repo os2display repos
+      # We do also have forks of some of these in github.com/kkos2display but
+      # they are not currently in use with the exception of display-templates.
+      - test -d display-api-service || git clone git@github.com:os2display/display-api-service.git
       - test -d display-admin-client || git clone git@github.com:os2display/display-admin-client.git
       - test -d display-client || git clone git@github.com:os2display/display-client.git
+      # Fork to include additional templates with the goal of eventual upstreaming.
       - test -d display-templates || git clone git@github.com:kkos2/display-templates
+      # KK Specific repository for automated integration.
       - test -d display-kk-integration || git clone git@github.com:reload/display-kk-integration-poc.git display-kk-integration
 
-  projects:update:
-    desc: Pull all projects
-    deps:
-      - projects:clone
-    dir: projects
-    cmds:
-      - cd display-api-service && git pull
-      - cd display-admin-client && git pull
-      - cd display-client && git pull
-      - cd display-templates && git pull
-      - cd display-kk-integration && git pull
-
-  projects:git-reset:
+  git:reset:all:
     desc: Reset projects to upstream develop. This will DESTROY any local changes.
     dir: projects
     deps:
-      - projects:clone
+      - git:clone:all
     cmds:
-      - cd display-api-service && git reset --hard && git checkout develop-poc && git pull
-      - cd display-admin-client && git reset --hard && git checkout develop && git pull
-      - cd display-client && git reset --hard && git checkout develop && git pull
-      - cd display-templates && git reset --hard && git checkout kk-develop && git pull
-      - cd display-kk-integration && git reset --hard && git checkout main && git pull
+      - cd display-api-service
+        && git reset --hard
+        && git checkout develop
+        && git pull
+      - cd display-templates
+        && git reset --hard
+        && git checkout kk-develop
+        && git pull
+      - cd display-admin-client
+        && git reset --hard
+        && git checkout develop
+        && git pull
+      - cd display-client
+        && git reset --hard
+        && git checkout develop
+        && git pull
+      - cd display-kk-integration
+        && git reset --hard
+        && git checkout main
+        && git pull
 
-  projects:status:
+  git:status:all:
     dir: projects
     deps:
-      - projects:clone
+      - git:clone:all
     cmds:
       - cd display-api-service && git status
       - cd display-admin-client && git status
@@ -141,22 +148,25 @@ tasks:
     dir: projects/display-api-service
     cmds:
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/full-screen.json
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/six-areas.json
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/three-boxes-horizontal.json
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/three-boxes.json
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/touch-template.json
+      - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/two-boxes-vertical.json
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/screen-layouts/two-boxes.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/book-review/book-review.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/calendar/calendar.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/contacts/contacts.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/iframe/iframe.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/image-text/image-text.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/instagram-feed/instagram-feed.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/poster/poster.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/rss/rss.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/slideshow/slideshow.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/table/table.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/video/video.json
-      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/twenty-three-video/twenty-three-video.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/book-review/book-review-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/calendar/calendar-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/contacts/contacts-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/iframe/iframe-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/image-text/image-text-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/instagram-feed/instagram-feed-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/poster/poster-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/rss/rss-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/slideshow/slideshow-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/table/table-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/twenty-three-video/twenty-three-video-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/video/video-dev.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/travel/travel-dev.json
 
   api:down:
     dir: projects/display-api-service
@@ -191,7 +201,7 @@ tasks:
   reset:
     deps:
       - network:setup
-      - projects:clone
+      - git:clone:all
     cmds:
       - task: api:down
       - task: admin:down
@@ -201,6 +211,11 @@ tasks:
       - task: api:reset
       - task: admin:reset
       - task: display:reset
+      - echo "Reset completed, sites can be accessed on the following urls"
+      - echo " -  https://display-client.local.itkdev.dk"
+      - echo " -  https://display-admin-client.local.itkdev.dk/admin"
+      - echo " -  https://displayapiservice.local.itkdev.dk/client"
+
 
   down:
     cmds:

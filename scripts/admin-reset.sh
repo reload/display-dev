@@ -14,5 +14,5 @@ test -f ./public/access-config.json || cp ./public/example-access-config.json ./
 
 cp ../../etc/admin_docker-compose.override.yml ./docker-compose.override.yml
 
-docker compose up -d
 docker-compose run node yarn install
+docker compose up -d
