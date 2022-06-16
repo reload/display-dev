@@ -194,7 +194,7 @@ tasks:
     dir: traefik/certs
     cmds:
       - mkcert -cert-file local-cert.pem -key-file local-key.pem "*.local.itkdev.dk" "*.docker"
-      - mkcert install
+      - mkcert -install
 
   network:setup:
     cmds:
