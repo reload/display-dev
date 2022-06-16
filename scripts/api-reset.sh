@@ -11,6 +11,9 @@ docker compose down -v || true
 cp ../../etc/api_.env.dev.local ./.env.dev.local
 cp ../../etc/api_docker-compose.override.yml ./docker-compose.override.yml
 docker compose up -d
+
+# See the following for the source of the commands below:
+# https://github.com/os2display/display-docs/blob/develop/hosting.md#general-hosting
 docker compose exec phpfpm composer install
 test -f config/jwt/private.pem || docker compose exec phpfpm bin/console lexik:jwt:generate-keypair
 docker compose exec phpfpm bin/console doctrine:migrations:migrate --no-interaction
