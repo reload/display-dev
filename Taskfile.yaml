@@ -88,6 +88,11 @@ tasks:
     cmds:
       - docker compose down -v
 
+  display:up:
+    dir: projects/display-client
+    cmds:
+      - docker compose up -d
+
   admin:reset:
     dir: projects/display-admin-client
     cmds:
@@ -97,6 +102,11 @@ tasks:
     dir: projects/display-admin-client
     cmds:
       - docker compose down -v
+
+  admin:up:
+    dir: projects/display-admin-client
+    cmds:
+      - docker compose up -d
 
   admin:logs:
     dir: projects/display-admin-client
@@ -112,6 +122,11 @@ tasks:
     dir: projects/display-templates
     cmds:
       - docker compose down -v
+
+  templates:up:
+    dir: projects/display-templates
+    cmds:
+      - docker compose up -d
 
   templates:logs:
     dir: projects/display-templates
@@ -175,6 +190,11 @@ tasks:
     cmds:
       - docker compose down -v
 
+  api:up:
+    dir: projects/display-api-service
+    cmds:
+      - docker compose up -d
+
   traefik:reset:
     cmds:
       - task: traefik:mkcert
@@ -218,6 +238,19 @@ tasks:
       - echo " -  https://display-admin-client.local.itkdev.dk/admin"
       - echo " -  https://displayapiservice.local.itkdev.dk/client"
 
+  up:
+    deps:
+      - network:setup
+      - git:clone:all
+    cmds:
+      - task: templates:up
+      - task: api:up
+      - task: admin:up
+      - task: display:up
+      - echo "Reset completed, sites can be accessed on the following urls"
+      - echo " -  https://display-client.local.itkdev.dk"
+      - echo " -  https://display-admin-client.local.itkdev.dk/admin"
+      - echo " -  https://displayapiservice.local.itkdev.dk/client"
 
   down:
     cmds:
