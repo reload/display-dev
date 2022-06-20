@@ -234,9 +234,7 @@ tasks:
       - task: admin:reset
       - task: display:reset
       - echo "Reset completed, sites can be accessed on the following urls"
-      - echo " -  https://display-client.local.itkdev.dk"
-      - echo " -  https://display-admin-client.local.itkdev.dk/admin"
-      - echo " -  https://displayapiservice.local.itkdev.dk/client"
+      - task: print:urls
 
   up:
     deps:
@@ -247,10 +245,15 @@ tasks:
       - task: api:up
       - task: admin:up
       - task: display:up
-      - echo "Reset completed, sites can be accessed on the following urls"
-      - echo " -  https://display-client.local.itkdev.dk"
-      - echo " -  https://display-admin-client.local.itkdev.dk/admin"
-      - echo " -  https://displayapiservice.local.itkdev.dk/client"
+      - echo "Up completed, sites can be accessed on the following urls"
+      - task: print:urls
+
+  print:urls:
+    silent: true
+    cmds:
+    - echo " -  https://display-client.local.itkdev.dk"
+    - echo " -  https://display-admin-client.local.itkdev.dk/admin"
+    - echo " -  https://displayapiservice.local.itkdev.dk/client"
 
   down:
     cmds:
