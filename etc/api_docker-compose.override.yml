@@ -9,6 +9,9 @@ services:
       # Have the http router redirect to https, the middleware is defined in static.yml
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.middlewares=redirect-to-https@file"
 
+  mariadb:
+    image: mariadb:10.5
+
   phpfpm:
     extra_hosts:
       # Make traefik available as display-templates.local.itkdev.dk
