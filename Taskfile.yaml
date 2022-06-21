@@ -88,6 +88,11 @@ tasks:
     cmds:
       - docker compose down -v
 
+  display:stop:
+    dir: projects/display-client
+    cmds:
+      - docker compose stop
+
   display:up:
     dir: projects/display-client
     cmds:
@@ -102,6 +107,11 @@ tasks:
     dir: projects/display-admin-client
     cmds:
       - docker compose down -v
+
+  admin:stop:
+    dir: projects/display-admin-client
+    cmds:
+      - docker compose stop
 
   admin:up:
     dir: projects/display-admin-client
@@ -122,6 +132,11 @@ tasks:
     dir: projects/display-templates
     cmds:
       - docker compose down -v
+
+  templates:stop:
+    dir: projects/display-templates
+    cmds:
+      - docker compose stop
 
   templates:up:
     dir: projects/display-templates
@@ -195,6 +210,11 @@ tasks:
     cmds:
       - docker compose up -d
 
+  api:stop:
+    dir: projects/display-api-service
+    cmds:
+      - docker compose stop
+
   traefik:reset:
     cmds:
       - task: traefik:mkcert
@@ -235,6 +255,16 @@ tasks:
       - task: display:reset
       - echo "Reset completed, sites can be accessed on the following urls"
       - task: print:urls
+
+  stop:
+    deps:
+      - network:setup
+      - git:clone:all
+    cmds:
+      - task: templates:stop
+      - task: api:stop
+      - task: admin:stop
+      - task: display:stop
 
   up:
     deps:
