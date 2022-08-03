@@ -25,7 +25,7 @@ tasks:
       # Fork to include additional templates with the goal of eventual upstreaming.
       - test -d display-templates || git clone git@github.com:kkos2/display-templates
       # KK Specific repository for automated integration.
-      - test -d display-kk-integration || git clone git@github.com:reload/display-kk-integration-poc.git display-kk-integration
+      - test -d display-kk-integration || git clone git@github.com:kkos2/kk-display-integration.git
 
   git:reset:all:
     desc: Reset projects to upstream develop. This will DESTROY any local changes.
