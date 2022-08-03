@@ -56,6 +56,7 @@ tasks:
         && git pull
 
   git:status:all:
+    desc: "Do a git status on all projects"
     dir: projects
     deps:
       - git:clone:all
@@ -80,76 +81,91 @@ tasks:
       - projects/display-kk-integration/scripts/generate-client.sh ${PWD}/projects
 
   display:reset:
+    desc: "Reset the display client project"
     dir: projects/display-client
     cmds:
       - time ../../scripts/display-reset.sh
 
   display:down:
+    desc: "Bring the display client project down and delete volumes"
     dir: projects/display-client
     cmds:
       - docker compose down -v
 
   display:stop:
+    desc: "Stop the display client project so that it can be started again"
     dir: projects/display-client
     cmds:
       - docker compose stop
 
   display:up:
+    desc: "Bring the display client project up"
     dir: projects/display-client
     cmds:
       - docker compose up -d
 
   admin:reset:
+    desc: "Reset the admin project by deleting all state and bringing the project up in a clean state."
     dir: projects/display-admin-client
     cmds:
       - time ../../scripts/admin-reset.sh
 
   admin:down:
+    desc: "Bring the display admin project down and delete volumes"
     dir: projects/display-admin-client
     cmds:
       - docker compose down -v
 
   admin:stop:
+    desc: "Stop the Display admin project so that it can be started again"
     dir: projects/display-admin-client
     cmds:
       - docker compose stop
 
   admin:up:
+    desc: "Bring the display client project up"
     dir: projects/display-admin-client
     cmds:
       - docker compose up -d
 
   admin:logs:
+    desc: "Show and tail logs"
     dir: projects/display-admin-client
     cmds:
       - docker compose logs -f
 
   templates:reset:
+    desc: "Reset the templates project by deleting all state and bringing the project up in a clean state."
     dir: projects/display-templates
     cmds:
       - time ../../scripts/templates-reset.sh
 
   templates:down:
+    desc: "Bring the display te,åæate project down and delete volumes"
     dir: projects/display-templates
     cmds:
       - docker compose down -v
 
   templates:stop:
+    desc: "Stop the Display templates project so that it can be started again"
     dir: projects/display-templates
     cmds:
       - docker compose stop
 
   templates:up:
+    desc: "Bring the Display templates project up"
     dir: projects/display-templates
     cmds:
       - docker compose up -d
 
   templates:logs:
+    desc: "Show and tail logs"
     dir: projects/display-templates
     cmds:
       - docker compose logs -f
 
   api:reset:
+    desc: "Reset the api project by deleting all state and bringing the project up in a clean state."
     deps:
       - network:setup
     dir: projects/display-api-service
@@ -166,16 +182,19 @@ tasks:
         --input-spec /local/api-spec-v1.json
 
   api:update-spec:
+    desc: "Update the openapi-spec for the API-server"
     dir: projects/display-api-service
     cmds:
       - docker compose exec phpfpm composer update-api-spec
 
   api:logs:
+    desc: "Show and tail logs"
     dir: projects/display-api-service
     cmds:
       - docker compose logs -f
 
   api:template-load:
+    desc: "Load a standard set of screen and slide templates into a running os2display"
     dir: projects/display-api-service
     cmds:
       # The screen-layouts seems to have disappeared with https://github.com/os2display/display-templates/pull/76
@@ -202,21 +221,25 @@ tasks:
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/video-config-develop.json
 
   api:down:
+    desc: "Bring the display api project down and delete volumes"
     dir: projects/display-api-service
     cmds:
       - docker compose down -v
 
   api:up:
+    desc: "Bring the API project up"
     dir: projects/display-api-service
     cmds:
       - docker compose up -d
 
   api:stop:
+    desc: "Stop the Display api project so that it can be started again"
     dir: projects/display-api-service
     cmds:
       - docker compose stop
 
   traefik:reset:
+    desc: "Reset the traefik by taking the service down and bringing it back up again."
     deps:
       - network:setup
     cmds:
@@ -224,26 +247,31 @@ tasks:
       - time scripts/traefik-reset.sh
 
   traefik:logs:
+    desc: "Show and tail logs"
     dir: traefik
     cmds:
       - docker compose logs -f
 
   traefik:down:
+    desc: "Bring Traefik"
     dir: traefik
     cmds:
       - docker compose down
 
   traefik:mkcert:
+    desc: "Configure and install root certificates traefik can use to sign site certificates"
     dir: traefik/certs
     cmds:
       - mkcert -cert-file local-cert.pem -key-file local-key.pem "*.local.itkdev.dk" "*.docker"
       - mkcert -install
 
   network:setup:
+    desc: "Ensure all external docker networks has been created"
     cmds:
       - docker network create frontend 2>/dev/null|| true
 
   reset:
+    desc: "Reset all projects."
     deps:
       - network:setup
       - git:clone:all
@@ -260,6 +288,7 @@ tasks:
       - task: print:urls
 
   stop:
+    desc: "Stop all projects."
     deps:
       - network:setup
       - git:clone:all
@@ -270,6 +299,7 @@ tasks:
       - task: display:stop
 
   up:
+    desc: "Bring all projects up."
     deps:
       - network:setup
       - git:clone:all
@@ -282,13 +312,17 @@ tasks:
       - task: print:urls
 
   print:urls:
+    desc: "Print urls for the services a developer may want to access."
     silent: true
     cmds:
-    - echo " -  https://display-client.local.itkdev.dk"
-    - echo " -  https://display-admin-client.local.itkdev.dk/admin"
-    - echo " -  https://displayapiservice.local.itkdev.dk/client"
+      - echo "Display"
+      - echo " - Client - https://display-client.local.itkdev.dk"
+      - echo " - Admin - https://display-admin-client.local.itkdev.dk/admin"
+      - echo " - Templates demo - https://display-templates.local.itkdev.dk"
+      - echo " - Templates Storybook - https://storybook.local.itkdev.dk"
 
   down:
+    desc: "Take all projects down."
     cmds:
       - task: traefik:down
       - task: api:down
