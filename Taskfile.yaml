@@ -216,6 +216,8 @@ tasks:
       - docker compose stop
 
   traefik:reset:
+    deps:
+      - network:setup
     cmds:
       - task: traefik:mkcert
       - time scripts/traefik-reset.sh
