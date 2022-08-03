@@ -13,6 +13,7 @@ tasks:
     silent: true
 
   git:clone:all:
+    desc: Git clone all projects if they have not yet been cloned.
     dir: projects
     silent: true
     cmds:
