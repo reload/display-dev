@@ -206,6 +206,7 @@ tasks:
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/src/screen-layouts/touch-template.json
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/src/screen-layouts/two-boxes-vertical.json
       - docker compose exec phpfpm bin/console app:screen-layouts:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/src/screen-layouts/two-boxes.json
+      - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/book-byen-config-develop.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/book-review-config-develop.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/calendar-config-develop.json
       - docker compose exec phpfpm bin/console app:template:load https://raw.githubusercontent.com/kkos2/display-templates/kk-develop/build/contacts-config-develop.json
